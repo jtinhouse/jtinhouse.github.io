@@ -253,6 +253,9 @@
   .pasos li::before { counter-increment: paso; content: counter(paso); font-family: var(--display); font-size: 1.35rem; line-height: 1; color: var(--acento); }
   .discrecion { margin-top: 22px; font-size: .92rem; color: var(--suave); }
   #copiar { margin-top: 14px; }
+  .aviso-envio { margin-top: 14px; max-width: 34em; font-size: .95rem; }
+  .aviso-envio.error { color: var(--acento); }
+  .aviso-envio .enlace { font-size: inherit; color: inherit; text-decoration-color: currentColor; }
 
   /* La comanda, colgada de su barra */
   .riel { position: relative; display: flex; flex-direction: column; align-items: center; min-height: 0; padding: clamp(10px, 3vh, 28px) 0 clamp(16px, 3vh, 28px); filter: drop-shadow(0 16px 22px rgba(0, 0, 0, .2)); animation: cuelga .8s .15s cubic-bezier(.2, .8, .2, 1) both; }
@@ -565,7 +568,8 @@
           <div class="campos">
             <div class="campo"><label for="f-fecha" data-t="l_fecha">Fecha</label><input id="f-fecha" type="date"></div>
             <div class="campo"><label for="f-zona" data-t="l_zona">Zona</label><input id="f-zona" type="text" maxlength="60" data-tph="ph_zona" placeholder="Chamberí, La Moraleja…"></div>
-            <div class="campo ancho"><label for="f-nombre" data-t="l_nombre">Nombre</label><input id="f-nombre" type="text" maxlength="40" autocomplete="given-name" data-tph="ph_nombre" placeholder="Tu nombre"></div>
+            <div class="campo"><label for="f-nombre" data-t="l_nombre">Nombre</label><input id="f-nombre" type="text" maxlength="40" autocomplete="given-name" data-tph="ph_nombre" placeholder="Tu nombre"></div>
+            <div class="campo"><label for="f-contacto" data-t="l_contacto">Email o teléfono</label><input id="f-contacto" type="text" maxlength="80" autocomplete="email" data-tph="ph_contacto" placeholder="Para poder responderte"></div>
           </div>
           <p class="dato" id="dato" aria-live="polite"></p>
         </section>
@@ -577,6 +581,7 @@
             <a class="boton boton-principal" id="marchar-wa" href="https://wa.me/34670260160" target="_blank" rel="noopener"><span data-t="marchar_wa">Enviar por WhatsApp</span><span aria-hidden="true">→</span></a>
             <a class="boton boton-secundario" id="marchar-email" href="mailto:torresfernandez2000@gmail.com" data-t="marchar_email">Por email</a>
           </div>
+          <p class="aviso-envio" id="aviso-envio" aria-live="polite" hidden></p>
           <button class="enlace" type="button" id="copiar" data-t="copiar">Copiar el esquema</button>
           <ol class="pasos">
             <li data-t="pa1">Recibo tu esquema.</li>
@@ -699,6 +704,8 @@
   'use strict';
   var TEL = '34670260160';
   var EMAIL = 'torresfernandez2000@gmail.com';
+  /* Web3Forms: con clave, el esquema llega directo al correo de Jorge. Sin clave, se abre el correo del visitante. */
+  var WEB3FORMS_KEY = '53f932c6-aac5-4330-a5fb-4a06805b5c5c';
   var ULTIMA = 7;
   var root = document.documentElement;
   var app = document.getElementById('app');
@@ -737,7 +744,7 @@
     al_ninguna: 'None', al_gluten: 'Gluten', al_lacteos: 'Dairy', al_huevo: 'Egg', al_pescado: 'Fish', al_marisco: 'Shellfish',
     al_frutos: 'Tree nuts', al_cacahuete: 'Peanuts', al_soja: 'Soy', al_sesamo: 'Sesame', al_vegetariano: 'Vegetarian', al_vegano: 'Vegan',
     q6: 'Date and place',
-    l_fecha: 'Date', l_zona: 'Area', l_nombre: 'Name',
+    l_fecha: 'Date', l_zona: 'Area', l_nombre: 'Name', l_contacto: 'Email or phone',
     q7: 'Sending',
     i7: 'Review the outline. It reaches me exactly as you see it, and I reply with a menu proposal.',
     marchar_wa: 'Send on WhatsApp', marchar_email: 'By email', copiar: 'Copy the outline',
@@ -768,7 +775,7 @@
     as1: 'Menus and costing', as2: 'Product development and R&amp;D', as3: 'Kitchen organization and documentation', as4: 'Branding, launches and events',
     as_cta: 'Let’s talk about your business'
   };
-  var EN_PH = { ph_excusa: 'A farewell, a promotion…', ph_idea: 'Write your answer…', ph_alergia: 'Another allergy or intolerance', ph_zona: 'Chamberí, La Moraleja…', ph_nombre: 'Your name' };
+  var EN_PH = { ph_excusa: 'A farewell, a promotion…', ph_idea: 'Write your answer…', ph_alergia: 'Another allergy or intolerance', ph_zona: 'Chamberí, La Moraleja…', ph_nombre: 'Your name', ph_contacto: 'So I can reply' };
   var EN_ARIA = { estilo: 'Style', menos: 'One fewer', mas: 'One more', pasos: 'Steps', comanda: 'Your outline', cerrar: 'Close', trayectoria: 'Career' };
 
   /* ---------- Textos que cambian con las respuestas ---------- */
@@ -818,6 +825,10 @@
       temporada: function (m, l) { return 'De temporada en ' + m + ': ' + l + '.'; },
       fechaLarga: function (d, t) { return t.dias[d.getDay()] + ' ' + d.getDate() + ' de ' + t.meses[d.getMonth()] + ' de ' + d.getFullYear(); },
       pasada: 'Esa fecha ya ha pasado.',
+      c_contacto: 'Contacto',
+      faltaContacto: 'Para responderte por email necesito tu email o teléfono.', anadirContacto: 'Añadirlo',
+      enviando: 'Enviando…', enviado: 'Recibido. Te respondo con una propuesta de menú.',
+      errorEnvio: 'No se ha podido enviar. Prueba por WhatsApp o escríbeme a torresfernandez2000@gmail.com.',
       hola: 'Hola, Jorge. Te envío mi esquema:', ideasTitulo: 'Gustos', m_pax: 'Comensales', firma: 'Un saludo,',
       directo: 'Hola, Jorge. Quería consultarte una fecha.',
       asesoria: 'Hola, Jorge. Quería hablar contigo de una asesoría para mi negocio.',
@@ -868,6 +879,10 @@
       temporada: function (m, l) { return 'In season in ' + m + ': ' + l + '.'; },
       fechaLarga: function (d, t) { return t.dias[d.getDay()] + ' ' + d.getDate() + ' ' + t.meses[d.getMonth()] + ' ' + d.getFullYear(); },
       pasada: 'That date has already passed.',
+      c_contacto: 'Contact',
+      faltaContacto: 'To reply by email I need your email or phone.', anadirContacto: 'Add it',
+      enviando: 'Sending…', enviado: 'Received. I’ll reply with a menu proposal.',
+      errorEnvio: 'It couldn’t be sent. Try WhatsApp or write to torresfernandez2000@gmail.com.',
       hola: 'Hi Jorge, here’s my outline:', ideasTitulo: 'Tastes', m_pax: 'Guests', firma: 'Best,',
       directo: 'Hi Jorge, I’d like to check a date.',
       asesoria: 'Hi Jorge, I’d like to talk about consulting for my business.',
@@ -882,7 +897,7 @@
   var e = estadoVacio();
 
   function estadoVacio() {
-    return { tipo: '', excusa: '', excusaOtra: '', objetivo: '', pax: 0, preps: 0, tuppers: 0, formato: '', ideas: [], alergias: [], alergiaOtra: '', fecha: '', zona: '', nombre: '', marchada: false, visto: 0 };
+    return { tipo: '', excusa: '', excusaOtra: '', objetivo: '', pax: 0, preps: 0, tuppers: 0, formato: '', ideas: [], alergias: [], alergiaOtra: '', fecha: '', zona: '', nombre: '', contacto: '', marchada: false, visto: 0 };
   }
 
   /* Borrador: solo vive en este navegador */
@@ -900,7 +915,7 @@
   function persistir() { guardar('comanda', JSON.stringify(e)); }
   function hayAlgo() {
     return !!(e.tipo || e.excusa || e.excusaOtra.trim() || e.objetivo || e.pax || e.preps || e.tuppers || e.formato || e.ideas.length || e.alergias.length ||
-      e.alergiaOtra.trim() || e.fecha || e.zona.trim() || e.nombre.trim());
+      e.alergiaOtra.trim() || e.fecha || e.zona.trim() || e.nombre.trim() || e.contacto.trim());
   }
 
   /* ---------- Estilos ---------- */
@@ -1005,6 +1020,7 @@
   alEscribir('f-fecha', function (v) { e.fecha = v; });
   alEscribir('f-zona', function (v) { e.zona = v; });
   alEscribir('f-nombre', function (v) { e.nombre = v; });
+  alEscribir('f-contacto', function (v) { e.contacto = v; });
   alEscribir('f-pax', function (v) { var n = parseInt(v, 10); if (!isNaN(n)) e.pax = Math.max(1, Math.min(200, n)); });
   $('f-pax').addEventListener('change', function () { this.value = e.pax || 2; });
   /* Meal prep: cada preparación lleva al menos 4 tuppers */
@@ -1020,7 +1036,7 @@
   $('f-preps').addEventListener('change', function () { this.value = prepsVisibles(); });
   alEscribir('f-tuppers', function (v) { var n = parseInt(v, 10); if (!isNaN(n) && n >= minTuppers()) e.tuppers = Math.min(100, n); });
   $('f-tuppers').addEventListener('change', function () { this.value = tuppersVisibles(); });
-  ['f-excusa', 'f-alergia', 'f-zona', 'f-nombre'].forEach(function (id) {
+  ['f-excusa', 'f-alergia', 'f-zona', 'f-nombre', 'f-contacto'].forEach(function (id) {
     $(id).addEventListener('keydown', function (ev) { if (ev.key === 'Enter') { ev.preventDefault(); irA(escena + 1); } });
   });
 
@@ -1097,6 +1113,7 @@
     escena = n;
     if (n > e.visto) e.visto = n;
     todos('.escena').forEach(function (s) { s.hidden = Number(s.getAttribute('data-escena')) !== n; });
+    avisoEnvio('');
     cerrarTirador();
     persistir();
     pintar(false);
@@ -1171,9 +1188,11 @@
     var al = textoAlergias();
     if (al) f.push({ k: 'al', ir: 5, clase: al.ninguna ? '' : 'c-alerta', texto: t.c_alergias + ': ' + al.texto,
       html: al.ninguna ? kv(t.c_alergias, escapar(al.texto)) : '<span class="c-k">' + t.c_alergias + ':</span> ' + escapar(al.texto) });
-    if (fecha || zona) f.push({ k: 's2', sep: true });
+    var contacto = e.contacto.trim();
+    if (fecha || zona || contacto) f.push({ k: 's2', sep: true });
     if (fecha) f.push({ k: 'fecha', ir: 6, html: kv(t.c_fecha, escapar(fechaCorta(fecha))), texto: t.c_fecha + ' · ' + fechaCorta(fecha) });
     if (zona) f.push({ k: 'zona', ir: 6, html: kv(t.c_zona, escapar(zona)), texto: t.c_zona + ' · ' + zona });
+    if (contacto) f.push({ k: 'contacto', ir: 6, html: kv(t.c_contacto, escapar(contacto)), texto: t.c_contacto + ' · ' + contacto });
     return f;
   }
 
@@ -1218,6 +1237,7 @@
     var det = [];
     if (fecha) det.push(t.c_fecha + ': ' + t.fechaLarga(fecha, t));
     if (e.zona.trim()) det.push(t.c_zona + ': ' + e.zona.trim());
+    if (e.contacto.trim()) det.push(t.c_contacto + ': ' + e.contacto.trim());
     if (det.length) l = l.concat([''], det);
     if (e.nombre.trim()) l.push('', t.firma + ' ' + e.nombre.trim() + '.');
     return l.join('\n');
@@ -1231,7 +1251,46 @@
   }
   function marchar() { e.marchada = true; persistir(); pintar(false); }
   $('marchar-wa').addEventListener('click', marchar);
-  $('marchar-email').addEventListener('click', marchar);
+  $('marchar-email').addEventListener('click', function (ev) {
+    if (!WEB3FORMS_KEY) { marchar(); return; }
+    ev.preventDefault();
+    enviarEmail();
+  });
+  function avisoEnvio(html, tipo) {
+    var a = $('aviso-envio');
+    a.innerHTML = html;
+    a.className = 'aviso-envio' + (tipo ? ' ' + tipo : '');
+    a.hidden = !html;
+  }
+  var enviando = false;
+  function enviarEmail() {
+    var t = TXT[idioma], contacto = e.contacto.trim(), nombre = e.nombre.trim();
+    if (enviando) return;
+    if (!contacto) {
+      avisoEnvio(escapar(t.faltaContacto) + ' <button type="button" class="enlace" id="ir-contacto">' + t.anadirContacto + '</button>', 'error');
+      $('ir-contacto').addEventListener('click', function () { irA(6, true); $('f-contacto').focus(); });
+      return;
+    }
+    enviando = true;
+    var boton = $('marchar-email');
+    boton.setAttribute('aria-disabled', 'true');
+    avisoEnvio(t.enviando);
+    var datos = { access_key: WEB3FORMS_KEY, subject: t.asunto + (nombre ? ' · ' + nombre : ''), from_name: nombre || 'Web', message: textoComanda() };
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contacto)) datos.email = contacto;
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(datos)
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        if (!r || !r.success) throw new Error(r && r.message);
+        marchar();
+        avisoEnvio(t.enviado, 'ok');
+      })
+      .catch(function () { avisoEnvio(escapar(t.errorEnvio), 'error'); })
+      .then(function () { enviando = false; boton.removeAttribute('aria-disabled'); });
+  }
   $('copiar').addEventListener('click', function () {
     var boton = this, texto = textoComanda();
     var hecho = function () {
@@ -1316,7 +1375,7 @@
   /* ---------- Pintar todo ---------- */
   function llenas() {
     return [false, !!e.tipo, !!(e.tipo === 'semana' ? e.objetivo : (e.excusa || e.excusaOtra.trim())), !!(e.tipo === 'semana' ? e.tuppers : e.pax), e.ideas.length > 0,
-      e.alergias.length > 0 || !!e.alergiaOtra.trim(), !!(e.fecha || e.zona.trim() || e.nombre.trim()), !!e.marchada];
+      e.alergias.length > 0 || !!e.alergiaOtra.trim(), !!(e.fecha || e.zona.trim() || e.nombre.trim() || e.contacto.trim()), !!e.marchada];
   }
   function titularHTML() {
     var t = TXT[idioma], nombre = e.tipo ? t.tipos[e.tipo] : t.menu, frase = nombre;
@@ -1361,6 +1420,7 @@
     sincronizar('f-fecha', e.fecha);
     sincronizar('f-zona', e.zona);
     sincronizar('f-nombre', e.nombre);
+    sincronizar('f-contacto', e.contacto);
     sincronizar('f-pax', String(e.pax || 2));
     sincronizar('f-preps', String(prepsVisibles()));
     sincronizar('f-tuppers', String(tuppersVisibles()));
