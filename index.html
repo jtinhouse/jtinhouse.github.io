@@ -326,6 +326,39 @@
   .paleta-btn:hover, .paleta-btn[aria-pressed="true"] { border-color: var(--tinta); }
   .paleta-btn .muestra { width: 20px; height: 20px; }
 
+  /* Maridaje */
+  .campo-bebida { max-width: 34rem; margin-top: 22px; }
+  .campo-bebida .contador-nota { margin-top: 8px; }
+  .nota-maridaje { padding: 16px 18px; border: 1px solid var(--linea); border-radius: 12px; color: var(--suave); }
+  .nota-maridaje strong { color: var(--tinta); font-weight: 500; }
+
+  /* Platos: fotos sueltas, nunca menús ni mesas de clientes */
+  .cajon-ancho { width: min(1000px, 100%); }
+  .cajon-ancho .cajon-dentro > p { max-width: 44em; }
+  .platos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-flow: dense; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .platos li { aspect-ratio: 1; min-width: 0; }
+  .platos li:nth-child(6n+1) { grid-column: span 2; grid-row: span 2; }
+  .plato { display: block; width: 100%; height: 100%; padding: 0; border: 0; border-radius: 10px; overflow: hidden; background: var(--superficie); cursor: zoom-in; }
+  .plato img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.2, .8, .2, 1); }
+  .plato:hover img { transform: scale(1.04); }
+  .plato-hueco { display: grid; place-items: center; width: 100%; height: 100%; border: 1px dashed var(--suave); border-radius: 10px; font-family: var(--mono); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); }
+  /* El visor siempre en oscuro: la foto manda */
+  .visor { width: 100%; max-width: 100%; height: 100%; max-height: 100%; margin: 0; padding: 0; border: 0; background: rgba(14, 14, 14, .97); color: #F2F0EA; }
+  .visor[open] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; animation: foto .3s ease; }
+  .visor::backdrop { background: transparent; }
+  .visor-cabeza { display: flex; align-items: center; justify-content: space-between; padding: 14px var(--gutter); font-family: var(--mono); font-size: .8rem; letter-spacing: .08em; }
+  .visor .cerrar { border-color: rgba(242, 240, 234, .3); color: inherit; }
+  .visor .cerrar:hover { border-color: #F2F0EA; }
+  .visor-foto { display: grid; place-items: center; min-height: 0; margin: 0; padding-inline: calc(var(--gutter) + 56px); }
+  .visor-foto.cambia { animation: foto .45s ease; }
+  .visor-foto img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 6px; }
+  .visor-foto .plato-hueco { width: min(70vh, 100%); height: auto; aspect-ratio: 1; border-color: rgba(242, 240, 234, .4); color: rgba(242, 240, 234, .7); }
+  .visor-pie { min-height: 3.4em; padding: 14px var(--gutter) 22px; font-family: var(--display); font-size: 1.35rem; line-height: 1.25; text-align: center; }
+  .visor-flecha { position: absolute; top: 50%; width: 48px; height: 48px; margin-top: -24px; border: 1px solid rgba(242, 240, 234, .3); border-radius: 50%; background: rgba(14, 14, 14, .5); color: inherit; font-size: 1.2rem; cursor: pointer; }
+  .visor-flecha:hover { border-color: #F2F0EA; }
+  .visor-flecha.anterior { left: var(--gutter); }
+  .visor-flecha.posterior { right: var(--gutter); }
+
   /* Móvil: la foto va en la portada y la comanda se recoge abajo */
   @media (max-width: 860px) {
     .nav, .puntos { display: none; }
@@ -350,15 +383,15 @@
     .comanda { width: 100%; max-height: 0; margin: 0; padding-block: 0; overflow: hidden; transform: none; -webkit-mask: none; mask: none; transition: max-height .45s ease, padding .45s ease; }
     .comanda.avanza { animation: none; }
     .riel.abierta .comanda { max-height: 68vh; max-height: 68svh; overflow-x: hidden; overflow-y: auto; padding-block: 8px 28px; }
-    .app[data-escena="7"] .escenario { padding-bottom: 40px; }
-    .app[data-escena="7"] .riel { position: static; margin-top: 28px; }
-    .app[data-escena="7"] .riel-tirador { display: none; }
-    .app[data-escena="7"] .comanda { max-height: none; padding-block: 26px 36px; overflow: visible;
+    .app[data-escena="8"] .escenario { padding-bottom: 40px; }
+    .app[data-escena="8"] .riel { position: static; margin-top: 28px; }
+    .app[data-escena="8"] .riel-tirador { display: none; }
+    .app[data-escena="8"] .comanda { max-height: none; padding-block: 26px 36px; overflow: visible;
       -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 14px 100%;
               mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 14px 100%; }
     /* Atrás y Siguiente, siempre a mano encima de la comanda */
     .flujo-pie { position: sticky; z-index: 3; bottom: calc(50px + env(safe-area-inset-bottom, 0px)); margin-top: 8px; padding-block: 12px; background: var(--fondo); }
-    .app[data-escena="7"] .flujo-pie { bottom: 0; }
+    .app[data-escena="8"] .flujo-pie { bottom: 0; }
   }
   @media (max-width: 560px) {
     .marca { font-size: 1.35rem; }
@@ -368,6 +401,10 @@
     .tarjeta strong { font-size: 1.6rem; }
     .mesa-fila { grid-template-columns: minmax(0, 1fr); }
     .mesa { height: 140px; }
+    .platos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .visor-foto { padding-inline: 0; }
+    .visor-flecha { top: auto; bottom: 18px; margin-top: 0; }
+    .visor-pie { padding-inline: 72px; }
   }
 
   @keyframes aparece { from { opacity: 0; transform: translateY(16px); } }
@@ -400,6 +437,7 @@
   <header class="cabecera">
     <button class="marca" type="button" id="inicio">Jorge Torres</button>
     <nav class="nav" aria-label="Más sobre mí">
+      <button type="button" data-abrir="platos" data-t="n_platos">Platos</button>
       <button type="button" data-abrir="quien" data-t="n_quien">Quién cocina</button>
       <button type="button" data-abrir="como" data-t="n_como">Cómo trabajo</button>
       <button type="button" data-abrir="asesoria" data-t="n_asesoria">Asesoría</button>
@@ -447,7 +485,7 @@
 
     <div class="flujo">
       <div class="flujo-cabeza">
-        <p class="etiqueta" id="paso">1 / 7</p>
+        <p class="etiqueta" id="paso">1 / 8</p>
         <p class="titular" id="titular" aria-live="polite">Tu <em>menú.</em></p>
       </div>
 
@@ -540,7 +578,23 @@
           <ul class="ideas" id="ideas"></ul>
         </section>
 
-        <section class="escena" data-escena="5" aria-labelledby="q5" hidden>
+        <section class="escena" data-escena="5" aria-labelledby="q-maridaje" hidden>
+          <h2 class="pregunta" id="q-maridaje" tabindex="-1" data-t="q_maridaje">El maridaje</h2>
+          <p class="intro" data-t="i_maridaje">Puedo acompañar el menú con vinos, con cócteles o con ambos, elegidos para cada plato.</p>
+          <div class="tarjetas" data-grupo="maridaje">
+            <button class="tarjeta" type="button" aria-pressed="false" data-valor="vinos"><strong data-t="ma_vinos">Vinos</strong><span data-t="ma_vinos_d">Elegidos para cada plato. Si buscas una botella concreta o una vertical, la busco.</span></button>
+            <button class="tarjeta" type="button" aria-pressed="false" data-valor="cocteles"><strong data-t="ma_cocteles">Cócteles</strong><span data-t="ma_cocteles_d">Pensados para el menú, del aperitivo a la sobremesa.</span></button>
+            <button class="tarjeta" type="button" aria-pressed="false" data-valor="ambos"><strong data-t="ma_ambos">Vinos y cócteles</strong><span data-t="ma_ambos_d">Cócteles y vino, cada uno en su momento.</span></button>
+            <button class="tarjeta" type="button" aria-pressed="false" data-valor="no"><strong data-t="ma_no">Sin maridaje</strong><span data-t="ma_no_d">Me ocupo solo de la cocina.</span></button>
+          </div>
+          <div class="campo campo-bebida" id="campo-bebida" hidden>
+            <label for="f-bebida" id="l-bebida">¿Alguna botella o vertical en mente?</label>
+            <input id="f-bebida" type="text" maxlength="120" autocomplete="off" placeholder="Una añada concreta, una bodega que os guste…">
+            <p class="contador-nota" id="nota-vertical" data-t="nota_vertical">Una vertical: el mismo vino en varias añadas, servidas juntas.</p>
+          </div>
+        </section>
+
+        <section class="escena" data-escena="6" aria-labelledby="q5" hidden>
           <h2 class="pregunta" id="q5" tabindex="-1" data-t="q5">Alergias y dietas</h2>
           <p class="intro" data-t="i5">Indica todas las de la mesa, aunque afecten a un solo invitado.</p>
           <div class="chips" data-grupo="alergias">
@@ -563,7 +617,7 @@
           </div>
         </section>
 
-        <section class="escena" data-escena="6" aria-labelledby="q6" hidden>
+        <section class="escena" data-escena="7" aria-labelledby="q6" hidden>
           <h2 class="pregunta" id="q6" tabindex="-1" data-t="q6">Fecha y lugar</h2>
           <div class="campos">
             <div class="campo"><label for="f-fecha" data-t="l_fecha">Fecha</label><input id="f-fecha" type="date"></div>
@@ -574,7 +628,7 @@
           <p class="dato" id="dato" aria-live="polite"></p>
         </section>
 
-        <section class="escena" data-escena="7" aria-labelledby="q7" hidden>
+        <section class="escena" data-escena="8" aria-labelledby="q7" hidden>
           <h2 class="pregunta" id="q7" tabindex="-1" data-t="q7">El envío</h2>
           <p class="intro" data-t="i7">Revisa el esquema. Me llega tal cual y te respondo con una propuesta de menú.</p>
           <div class="acciones">
@@ -618,6 +672,26 @@
   </main>
 </div>
 
+<dialog class="cajon cajon-ancho" id="cajon-platos" aria-labelledby="cp-titulo">
+  <div class="cajon-dentro">
+    <div class="cajon-cabeza"><span class="etiqueta" data-t="n_platos">Platos</span><button class="cerrar" type="button" data-cerrar aria-label="Cerrar" data-taria="cerrar">×</button></div>
+    <h2 id="cp-titulo" data-t="pl_titulo">Platos, <em>no menús.</em></h2>
+    <p class="cajon-sub" data-t="pl_sub">Aquí no hay menús ni cenas anteriores: cada menú es distinto.</p>
+    <p data-t="pl1">Enseñar el de otra mesa condicionaría el tuyo, y prefiero que llegues sin referencias. Estas fotos son platos sueltos, para que veas cómo cocino. Tu menú empieza desde cero.</p>
+    <ul class="platos" id="lista-platos"></ul>
+    <div class="acciones"><button class="boton boton-principal" type="button" id="platos-empezar"><span id="platos-empezar-texto">Diseñar mi menú</span><span aria-hidden="true">→</span></button></div>
+    <p class="cajon-pie">© 2026 Jorge Torres · <span data-t="pie">Cocinero privado · Madrid</span></p>
+  </div>
+</dialog>
+
+<dialog class="visor" id="visor" aria-label="Platos" data-taria="platos">
+  <div class="visor-cabeza"><span id="visor-cuenta"></span><button class="cerrar" type="button" data-cerrar aria-label="Cerrar" data-taria="cerrar">×</button></div>
+  <figure class="visor-foto" id="visor-foto"></figure>
+  <p class="visor-pie" id="visor-pie"></p>
+  <button class="visor-flecha anterior" type="button" id="visor-ant" aria-label="Anterior" data-taria="anterior">←</button>
+  <button class="visor-flecha posterior" type="button" id="visor-sig" aria-label="Siguiente" data-taria="posterior">→</button>
+</dialog>
+
 <dialog class="cajon" id="cajon-quien" aria-labelledby="cq-titulo">
   <div class="cajon-dentro">
     <div class="cajon-cabeza"><span class="etiqueta" data-t="n_quien">Quién cocina</span><button class="cerrar" type="button" data-cerrar aria-label="Cerrar" data-taria="cerrar">×</button></div>
@@ -650,6 +724,7 @@
       <li><strong data-t="st3_t">Lo ajustamos</strong><span data-t="st3_d">Hasta que sea tuyo, con el precio cerrado antes de empezar.</span></li>
       <li><strong data-t="st4_t">Cocino, sirvo y recojo</strong><span data-t="st4_d">En tu cocina, y la dejo como la encontré.</span></li>
     </ol>
+    <p class="nota-maridaje" data-t="d_maridaje"><strong>Maridaje.</strong> Vinos o cócteles elegidos para cada plato. Si buscas una botella concreta o una vertical, la busco.</p>
     <div class="puntos-disc">
       <p data-t="d1"><strong>Sin fotos</strong>No fotografío tu casa, tu mesa ni a tus invitados.</p>
       <p data-t="d2"><strong>Sin redes</strong>No publico nada de mi trabajo con clientes.</p>
@@ -683,6 +758,7 @@
   <div class="cajon-dentro">
     <div class="cajon-cabeza"><span class="etiqueta" id="cm-titulo">Jorge Torres</span><button class="cerrar" type="button" data-cerrar aria-label="Cerrar" data-taria="cerrar">×</button></div>
     <div class="mas-nav">
+      <button type="button" data-abrir="platos" data-t="n_platos">Platos</button>
       <button type="button" data-abrir="quien" data-t="n_quien">Quién cocina</button>
       <button type="button" data-abrir="como" data-t="n_como">Cómo trabajo</button>
       <button type="button" data-abrir="asesoria" data-t="n_asesoria">Asesoría</button>
@@ -706,7 +782,8 @@
   var EMAIL = 'torresfernandez2000@gmail.com';
   /* Web3Forms: con clave, el esquema llega directo al correo de Jorge. Sin clave, se abre el correo del visitante. */
   var WEB3FORMS_KEY = '53f932c6-aac5-4330-a5fb-4a06805b5c5c';
-  var ULTIMA = 7;
+  var ULTIMA = 8;
+  var MARIDAJE = 5; /* meal prep se lo salta */
   var root = document.documentElement;
   var app = document.getElementById('app');
 
@@ -720,7 +797,7 @@
   /* ---------- Textos fijos en inglés (el español vive en el HTML) ---------- */
   var EN = {
     saltar: 'Skip to content',
-    n_quien: 'Who cooks', n_como: 'How I work', n_asesoria: 'Consulting', n_mas: 'More',
+    n_platos: 'Dishes', n_quien: 'Who cooks', n_como: 'How I work', n_asesoria: 'Consulting', n_mas: 'More',
     p_etiqueta: 'Private cook · Madrid',
     p_titulo: 'Your menu, <em>written for you.</em>',
     p_entrada: 'Private dinners, events and meal prep in Madrid. Every menu, from scratch.',
@@ -739,6 +816,13 @@
     q4: 'Your tastes',
     i4: 'Every menu starts from scratch. Tell me about memories, trips or ingredients you love, and I turn them into dishes.',
     otra_chispa: 'Another question', apuntar: 'Add',
+    q_maridaje: 'The pairing',
+    i_maridaje: 'I can pair the menu with wine, cocktails or both, chosen for each dish.',
+    ma_vinos: 'Wine', ma_vinos_d: 'Chosen for each dish. If you’re after a specific bottle or a vertical, I’ll look for it.',
+    ma_cocteles: 'Cocktails', ma_cocteles_d: 'Made for the menu, from aperitif to after dinner.',
+    ma_ambos: 'Wine and cocktails', ma_ambos_d: 'Cocktails and wine, each at its moment.',
+    ma_no: 'No pairing', ma_no_d: 'I take care of the food only.',
+    nota_vertical: 'A vertical: the same wine across several vintages, served together.',
     q5: 'Allergies and diets',
     i5: 'List every one at the table, even if it affects a single guest.',
     al_ninguna: 'None', al_gluten: 'Gluten', al_lacteos: 'Dairy', al_huevo: 'Egg', al_pescado: 'Fish', al_marisco: 'Shellfish',
@@ -767,16 +851,20 @@
     st2_t: 'I write your menu', st2_d: 'From scratch, for that table and that date.',
     st3_t: 'We fine-tune it', st3_d: 'Until it’s yours, with the price agreed before we start.',
     st4_t: 'I cook, serve and clear', st4_d: 'In your kitchen, and I leave it as I found it.',
+    d_maridaje: '<strong>Pairing.</strong> Wines or cocktails chosen for each dish. If you’re after a specific bottle or a vertical, I’ll look for it.',
     d1: '<strong>No photos</strong>I don’t photograph your home, your table or your guests.',
     d2: '<strong>No social media</strong>I never post about my work with clients.',
     d3: '<strong>Your call</strong>If you want to film or take photos, that’s up to you. I’m happy to sign a confidentiality agreement.',
+    pl_titulo: 'Dishes, <em>not menus.</em>',
+    pl_sub: 'You won’t find past menus or dinners here: every menu is different.',
+    pl1: 'Showing someone else’s would shape yours, and I’d rather you came without references. These are individual dishes, so you can see how I cook. Your menu starts from scratch.',
     as_titulo: 'Your <em>business.</em>',
     as_intro: 'I also advise restaurants and food brands. Same method: first I understand what you need, then I build it to fit you.',
     as1: 'Menus and costing', as2: 'Product development and R&amp;D', as3: 'Kitchen organization and documentation', as4: 'Branding, launches and events',
     as_cta: 'Let’s talk about your business'
   };
   var EN_PH = { ph_excusa: 'A farewell, a promotion…', ph_idea: 'Write your answer…', ph_alergia: 'Another allergy or intolerance', ph_zona: 'Chamberí, La Moraleja…', ph_nombre: 'Your name', ph_contacto: 'So I can reply' };
-  var EN_ARIA = { estilo: 'Style', menos: 'One fewer', mas: 'One more', pasos: 'Steps', comanda: 'Your outline', cerrar: 'Close', trayectoria: 'Career' };
+  var EN_ARIA = { estilo: 'Style', menos: 'One fewer', mas: 'One more', pasos: 'Steps', comanda: 'Your outline', cerrar: 'Close', trayectoria: 'Career', platos: 'Dishes', anterior: 'Previous', posterior: 'Next' };
 
   /* ---------- Textos que cambian con las respuestas ---------- */
   var TXT = {
@@ -807,7 +895,7 @@
         'Un restaurante al que siempre vuelves, y qué pides allí.',
         'Lo que nunca falta en tu despensa.',
         'Un plato que te recuerde a alguien.',
-        'El vino o la bebida que tienes en mente.',
+        'La textura que más os gusta: crujiente, cremosa, jugosa…',
         'Cuánto picante os gusta.',
         'El postre que siempre pides.',
         'Un lugar al que te gustaría que os llevara la cena.',
@@ -832,7 +920,11 @@
       hola: 'Hola, Jorge. Te envío mi esquema:', ideasTitulo: 'Gustos', m_pax: 'Comensales', firma: 'Un saludo,',
       directo: 'Hola, Jorge. Quería consultarte una fecha.',
       asesoria: 'Hola, Jorge. Quería hablar contigo de una asesoría para mi negocio.',
-      asunto: 'Mi esquema'
+      asunto: 'Mi esquema',
+      c_maridaje: 'Maridaje', enMente: 'En mente',
+      bebidaLabel: { vinos: '¿Alguna botella o vertical en mente?', cocteles: '¿Algún cóctel o destilado favorito?', ambos: '¿Alguna botella, vertical o cóctel en mente?' },
+      bebidaPh: { vinos: 'Una añada concreta, una bodega que os guste…', cocteles: 'Un pisco sour, un negroni, un mezcal…', ambos: 'Una añada, una bodega, un cóctel…' },
+      foto: 'Foto', platoAlt: 'Plato de Jorge Torres'
     },
     en: {
       titulo: 'Jorge Torres — Private cook in Madrid', otroIdioma: 'Versión en español', copiado: 'Copied',
@@ -861,7 +953,7 @@
         'A restaurant you always return to, and what you order there.',
         'What’s always in your pantry.',
         'A dish that reminds you of someone.',
-        'The wine or drink you have in mind.',
+        'The texture you love most: crunchy, creamy, juicy…',
         'How much heat you enjoy.',
         'The dessert you always order.',
         'A place you’d like the dinner to take you to.',
@@ -886,7 +978,11 @@
       hola: 'Hi Jorge, here’s my outline:', ideasTitulo: 'Tastes', m_pax: 'Guests', firma: 'Best,',
       directo: 'Hi Jorge, I’d like to check a date.',
       asesoria: 'Hi Jorge, I’d like to talk about consulting for my business.',
-      asunto: 'My outline'
+      asunto: 'My outline',
+      c_maridaje: 'Pairing', enMente: 'In mind',
+      bebidaLabel: { vinos: 'Any bottle or vertical in mind?', cocteles: 'A favourite cocktail or spirit?', ambos: 'Any bottle, vertical or cocktail in mind?' },
+      bebidaPh: { vinos: 'A particular vintage, a winery you love…', cocteles: 'A pisco sour, a negroni, a mezcal…', ambos: 'A vintage, a winery, a cocktail…' },
+      foto: 'Photo', platoAlt: 'A dish by Jorge Torres'
     }
   };
 
@@ -897,7 +993,7 @@
   var e = estadoVacio();
 
   function estadoVacio() {
-    return { tipo: '', excusa: '', excusaOtra: '', objetivo: '', pax: 0, preps: 0, tuppers: 0, formato: '', ideas: [], alergias: [], alergiaOtra: '', fecha: '', zona: '', nombre: '', contacto: '', marchada: false, visto: 0 };
+    return { tipo: '', excusa: '', excusaOtra: '', objetivo: '', pax: 0, preps: 0, tuppers: 0, formato: '', ideas: [], maridaje: '', bebida: '', alergias: [], alergiaOtra: '', fecha: '', zona: '', nombre: '', contacto: '', marchada: false, visto: 0 };
   }
 
   /* Borrador: solo vive en este navegador */
@@ -914,7 +1010,7 @@
   })();
   function persistir() { guardar('comanda', JSON.stringify(e)); }
   function hayAlgo() {
-    return !!(e.tipo || e.excusa || e.excusaOtra.trim() || e.objetivo || e.pax || e.preps || e.tuppers || e.formato || e.ideas.length || e.alergias.length ||
+    return !!(e.tipo || e.excusa || e.excusaOtra.trim() || e.objetivo || e.pax || e.preps || e.tuppers || e.formato || e.ideas.length || e.maridaje || e.bebida.trim() || e.alergias.length ||
       e.alergiaOtra.trim() || e.fecha || e.zona.trim() || e.nombre.trim() || e.contacto.trim());
   }
 
@@ -976,6 +1072,7 @@
     });
     guardar('idioma', lang);
     marcarPaleta();
+    pintarPlatos();
     pintar(true);
   }
   botonIdioma.addEventListener('click', function () { aplicarIdioma(idioma === 'es' ? 'en' : 'es'); });
@@ -1021,6 +1118,7 @@
   alEscribir('f-zona', function (v) { e.zona = v; });
   alEscribir('f-nombre', function (v) { e.nombre = v; });
   alEscribir('f-contacto', function (v) { e.contacto = v; });
+  alEscribir('f-bebida', function (v) { e.bebida = v; });
   alEscribir('f-pax', function (v) { var n = parseInt(v, 10); if (!isNaN(n)) e.pax = Math.max(1, Math.min(200, n)); });
   $('f-pax').addEventListener('change', function () { this.value = e.pax || 2; });
   /* Meal prep: cada preparación lleva al menos 4 tuppers */
@@ -1036,7 +1134,7 @@
   $('f-preps').addEventListener('change', function () { this.value = prepsVisibles(); });
   alEscribir('f-tuppers', function (v) { var n = parseInt(v, 10); if (!isNaN(n) && n >= minTuppers()) e.tuppers = Math.min(100, n); });
   $('f-tuppers').addEventListener('change', function () { this.value = tuppersVisibles(); });
-  ['f-excusa', 'f-alergia', 'f-zona', 'f-nombre', 'f-contacto'].forEach(function (id) {
+  ['f-excusa', 'f-bebida', 'f-alergia', 'f-zona', 'f-nombre', 'f-contacto'].forEach(function (id) {
     $(id).addEventListener('keydown', function (ev) { if (ev.key === 'Enter') { ev.preventDefault(); irA(escena + 1); } });
   });
 
@@ -1101,8 +1199,15 @@
   }
   migas.addEventListener('click', function (ev) { var b = ev.target.closest('[data-ir]'); if (b) irA(Number(b.getAttribute('data-ir'))); });
 
+  /* Pasos que ve cada servicio: meal prep no lleva maridaje */
+  function pasos() {
+    var l = [];
+    for (var i = 1; i <= ULTIMA; i++) if (!(i === MARIDAJE && e.tipo === 'semana')) l.push(i);
+    return l;
+  }
   function irA(n, sinFoco) {
     n = Math.max(0, Math.min(ULTIMA, n));
+    if (n === MARIDAJE && e.tipo === 'semana') n += n >= escena ? 1 : -1;
     clearTimeout(tAvance);
     if (n > escena) {
       if (escena === 3 && e.tipo !== 'semana' && !e.pax) e.pax = 2;
@@ -1146,7 +1251,8 @@
 
   function textoValor(grupo, v) {
     var b = document.querySelector('[data-grupo="' + grupo + '"] [data-valor="' + v + '"]');
-    return b ? b.textContent.trim() : v;
+    if (!b) return v;
+    return (b.querySelector('strong') || b).textContent.trim();
   }
   function fechaDe(iso) {
     var p = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
@@ -1174,7 +1280,7 @@
 
   function filasComanda() {
     var t = TXT[idioma], f = [], nombre = e.nombre.trim(), zona = e.zona.trim(), fecha = fechaDe(e.fecha);
-    f.push({ k: 'mesa', ir: 6, html: kv(t.c_mesa, nombre ? escapar(nombre) : hueco(8)), texto: nombre ? t.c_mesa + ' · ' + nombre : '' });
+    f.push({ k: 'mesa', ir: 7, html: kv(t.c_mesa, nombre ? escapar(nombre) : hueco(8)), texto: nombre ? t.c_mesa + ' · ' + nombre : '' });
     if (e.tipo === 'semana') {
       f.push({ k: 'preps', ir: 3, html: kv(t.c_preps, e.preps ? String(e.preps) : hueco(2)), texto: e.preps ? t.c_preps + ' · ' + e.preps : '' });
       f.push({ k: 'tuppers', ir: 3, html: kv(t.c_tuppers, e.tuppers ? String(e.tuppers) : hueco(2)), texto: e.tuppers ? t.c_tuppers + ' · ' + e.tuppers : '' });
@@ -1185,14 +1291,19 @@
     if (e.tipo) { var lt = lineaTipo(); f.push({ k: 'tipo', ir: 1, clase: 'c-grande', html: escapar(lt), texto: lt }); }
     if (e.tipo !== 'semana' && e.formato) { var fo = textoValor('formato', e.formato); f.push({ k: 'formato', ir: 3, html: escapar(fo), texto: fo }); }
     e.ideas.forEach(function (i) { f.push({ k: 'i' + i.id, ir: 4, clase: 'c-idea', html: '«' + escapar(i.r) + '»', texto: '«' + i.r + '»' }); });
+    if (e.tipo !== 'semana' && e.maridaje) {
+      var ma = textoValor('maridaje', e.maridaje), bebida = e.maridaje !== 'no' ? e.bebida.trim() : '';
+      f.push({ k: 'maridaje', ir: MARIDAJE, html: kv(t.c_maridaje, escapar(ma)), texto: t.c_maridaje + ' · ' + ma });
+      if (bebida) f.push({ k: 'bebida', ir: MARIDAJE, clase: 'c-idea', html: '«' + escapar(bebida) + '»', texto: '«' + bebida + '»' });
+    }
     var al = textoAlergias();
-    if (al) f.push({ k: 'al', ir: 5, clase: al.ninguna ? '' : 'c-alerta', texto: t.c_alergias + ': ' + al.texto,
+    if (al) f.push({ k: 'al', ir: 6, clase: al.ninguna ? '' : 'c-alerta', texto: t.c_alergias + ': ' + al.texto,
       html: al.ninguna ? kv(t.c_alergias, escapar(al.texto)) : '<span class="c-k">' + t.c_alergias + ':</span> ' + escapar(al.texto) });
     var contacto = e.contacto.trim();
     if (fecha || zona || contacto) f.push({ k: 's2', sep: true });
-    if (fecha) f.push({ k: 'fecha', ir: 6, html: kv(t.c_fecha, escapar(fechaCorta(fecha))), texto: t.c_fecha + ' · ' + fechaCorta(fecha) });
-    if (zona) f.push({ k: 'zona', ir: 6, html: kv(t.c_zona, escapar(zona)), texto: t.c_zona + ' · ' + zona });
-    if (contacto) f.push({ k: 'contacto', ir: 6, html: kv(t.c_contacto, escapar(contacto)), texto: t.c_contacto + ' · ' + contacto });
+    if (fecha) f.push({ k: 'fecha', ir: 7, html: kv(t.c_fecha, escapar(fechaCorta(fecha))), texto: t.c_fecha + ' · ' + fechaCorta(fecha) });
+    if (zona) f.push({ k: 'zona', ir: 7, html: kv(t.c_zona, escapar(zona)), texto: t.c_zona + ' · ' + zona });
+    if (contacto) f.push({ k: 'contacto', ir: 7, html: kv(t.c_contacto, escapar(contacto)), texto: t.c_contacto + ' · ' + contacto });
     return f;
   }
 
@@ -1232,6 +1343,10 @@
         l.push('— ' + i.r + (p ? ' (' + p.replace(/\.$/, '') + ')' : ''));
       });
     }
+    if (e.tipo !== 'semana' && e.maridaje) {
+      l.push('', t.c_maridaje + ': ' + textoValor('maridaje', e.maridaje));
+      if (e.maridaje !== 'no' && e.bebida.trim()) l.push(t.enMente + ': ' + e.bebida.trim());
+    }
     var al = textoAlergias();
     if (al) l.push('', t.c_alergias + ': ' + al.texto);
     var det = [];
@@ -1268,7 +1383,7 @@
     if (enviando) return;
     if (!contacto) {
       avisoEnvio(escapar(t.faltaContacto) + ' <button type="button" class="enlace" id="ir-contacto">' + t.anadirContacto + '</button>', 'error');
-      $('ir-contacto').addEventListener('click', function () { irA(6, true); $('f-contacto').focus(); });
+      $('ir-contacto').addEventListener('click', function () { irA(7, true); $('f-contacto').focus(); });
       return;
     }
     enviando = true;
@@ -1375,7 +1490,7 @@
   /* ---------- Pintar todo ---------- */
   function llenas() {
     return [false, !!e.tipo, !!(e.tipo === 'semana' ? e.objetivo : (e.excusa || e.excusaOtra.trim())), !!(e.tipo === 'semana' ? e.tuppers : e.pax), e.ideas.length > 0,
-      e.alergias.length > 0 || !!e.alergiaOtra.trim(), !!(e.fecha || e.zona.trim() || e.nombre.trim() || e.contacto.trim()), !!e.marchada];
+      e.tipo !== 'semana' && !!e.maridaje, e.alergias.length > 0 || !!e.alergiaOtra.trim(), !!(e.fecha || e.zona.trim() || e.nombre.trim() || e.contacto.trim()), !!e.marchada];
   }
   function titularHTML() {
     var t = TXT[idioma], nombre = e.tipo ? t.tipos[e.tipo] : t.menu, frase = nombre;
@@ -1414,6 +1529,10 @@
     $('contadores').classList.toggle('dos', semana);
     $('q2').textContent = semana ? t.q2_semana : t.q2;
     $('q3').textContent = semana ? t.q3_semana : t.q3;
+    var conBebida = !!e.maridaje && e.maridaje !== 'no';
+    $('campo-bebida').hidden = !conBebida;
+    $('nota-vertical').hidden = !(e.maridaje === 'vinos' || e.maridaje === 'ambos');
+    if (conBebida) { $('l-bebida').textContent = t.bebidaLabel[e.maridaje]; $('f-bebida').placeholder = t.bebidaPh[e.maridaje]; }
 
     sincronizar('f-excusa', e.excusaOtra);
     sincronizar('f-alergia', e.alergiaOtra);
@@ -1421,6 +1540,7 @@
     sincronizar('f-zona', e.zona);
     sincronizar('f-nombre', e.nombre);
     sincronizar('f-contacto', e.contacto);
+    sincronizar('f-bebida', e.bebida);
     sincronizar('f-pax', String(e.pax || 2));
     sincronizar('f-preps', String(prepsVisibles()));
     sincronizar('f-tuppers', String(tuppersVisibles()));
@@ -1431,13 +1551,16 @@
       if (!sinAnimar && titularPrevio) reanimar($('titular'), 'cambia');
       titularPrevio = h;
     }
-    $('paso').textContent = escena + ' / ' + ULTIMA;
+    var lista = pasos();
+    $('paso').textContent = (lista.indexOf(escena) + 1) + ' / ' + lista.length;
 
     todos('.miga').forEach(function (b) {
-      var n = Number(b.getAttribute('data-ir'));
+      var n = Number(b.getAttribute('data-ir')), pos = lista.indexOf(n) + 1;
+      b.parentNode.hidden = !pos;
+      b.textContent = pos;
       b.classList.toggle('hecha', !!ll[n]);
       if (n === escena) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
-      b.setAttribute('aria-label', t.paso + ' ' + n);
+      b.setAttribute('aria-label', t.paso + ' ' + pos);
     });
     $('siguiente').hidden = escena >= ULTIMA;
     $('siguiente-texto').textContent = escena === ULTIMA - 1 ? t.verComanda : (escena === 3 || ll[escena] ? t.siguiente : t.saltar);
@@ -1464,9 +1587,63 @@
     pintarComanda(sinAnimar);
     actualizarEnlaces();
     $('empezar-texto').innerHTML = hayAlgo() ? t.seguir : (idioma === 'en' ? EN : ES).p_cta;
+    $('platos-empezar-texto').innerHTML = $('empezar-texto').innerHTML;
     $('de-cero').hidden = !hayAlgo();
   }
   function cambio() { e.marchada = false; persistir(); pintar(false); }
+
+  /* ---------- Platos: fotos sueltas, nunca menús ni mesas de clientes ---------- */
+  /* Cada foto: { src: 'platos/nombre.webp', es: 'Pie de foto', en: 'Caption' }. Sin src se ve un hueco numerado. */
+  var PLATOS = [{}, {}, {}, {}, {}, {}, {}, {}, {}];
+  var platoActual = 0;
+  /* Hasta que haya fotos, el apartado no se enseña */
+  var hayFotos = PLATOS.some(function (p) { return p.src; });
+  todos('[data-abrir="platos"]').forEach(function (b) { b.hidden = !hayFotos; });
+  function fotoPlato(p, i, grande) {
+    var t = TXT[idioma];
+    if (!p.src) return '<span class="plato-hueco">' + t.foto + ' ' + (i + 1) + '</span>';
+    return '<img src="' + escapar(p.src) + '" alt="' + escapar(p[idioma] || t.platoAlt) + '"' + (grande ? '' : ' loading="lazy"') + ' decoding="async">';
+  }
+  function pintarPlatos() {
+    $('lista-platos').innerHTML = PLATOS.map(function (p, i) {
+      return '<li><button type="button" class="plato" data-plato="' + i + '">' + fotoPlato(p, i) + '</button></li>';
+    }).join('');
+  }
+  function verPlato(i) {
+    var n = PLATOS.length;
+    platoActual = (i + n) % n;
+    var p = PLATOS[platoActual];
+    $('visor-foto').innerHTML = fotoPlato(p, platoActual, true);
+    $('visor-pie').textContent = p[idioma] || '';
+    $('visor-cuenta').textContent = (platoActual + 1) + ' / ' + n;
+    reanimar($('visor-foto'), 'cambia');
+  }
+  $('lista-platos').addEventListener('click', function (ev) {
+    var b = ev.target.closest('[data-plato]');
+    if (!b) return;
+    verPlato(Number(b.getAttribute('data-plato')));
+    var v = $('visor');
+    if (v.showModal) v.showModal(); else v.setAttribute('open', '');
+  });
+  $('visor-ant').addEventListener('click', function () { verPlato(platoActual - 1); });
+  $('visor-sig').addEventListener('click', function () { verPlato(platoActual + 1); });
+  $('visor').addEventListener('keydown', function (ev) {
+    if (ev.key === 'ArrowLeft') verPlato(platoActual - 1);
+    if (ev.key === 'ArrowRight') verPlato(platoActual + 1);
+  });
+  $('visor').addEventListener('click', function (ev) { if (ev.target === this || ev.target === $('visor-foto')) this.close(); });
+  var toque = null;
+  $('visor').addEventListener('touchstart', function (ev) { toque = ev.touches[0].clientX; }, { passive: true });
+  $('visor').addEventListener('touchend', function (ev) {
+    if (toque === null) return;
+    var dx = ev.changedTouches[0].clientX - toque;
+    toque = null;
+    if (Math.abs(dx) > 50) verPlato(platoActual + (dx < 0 ? 1 : -1));
+  });
+  $('platos-empezar').addEventListener('click', function () {
+    todos('dialog[open]').forEach(function (x) { x.close(); });
+    $('empezar').click();
+  });
 
   /* ---------- Cajones ---------- */
   todos('[data-abrir]').forEach(function (b) {
@@ -1503,6 +1680,7 @@
   if (hash === 'es') inicial = 'es';
   aplicarIdioma(inicial);
   if (hash === 'comanda' || hash === 'esquema') irA(1, true);
+  if (hash === 'platos' && hayFotos) { var cp = $('cajon-platos'); if (cp.showModal) cp.showModal(); else cp.setAttribute('open', ''); }
 })();
 </script>
 </body>
