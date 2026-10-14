@@ -366,7 +366,11 @@
     .foto { display: none; }
     .escenario { display: block; height: auto; padding-bottom: 120px; }
     .portada { justify-content: flex-start; gap: 20px; min-height: 0; margin-inline: calc(var(--gutter) * -1); padding-bottom: 40px; }
-    .portada-foto { width: 100%; aspect-ratio: 16 / 9; place-content: center; padding-inline: var(--gutter); background: var(--fondo) var(--portada-img) center / cover no-repeat; }
+    /* La foto se funde arriba y abajo con el color de la página, sin cortes */
+    .portada-foto { position: relative; isolation: isolate; width: 100%; aspect-ratio: 16 / 9; place-content: center; padding-inline: var(--gutter); }
+    .portada-foto::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--portada-img) center / cover no-repeat;
+      -webkit-mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .6) 6%, #000 14%, #000 74%, rgba(0, 0, 0, .65) 90%, transparent);
+              mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .6) 6%, #000 14%, #000 74%, rgba(0, 0, 0, .65) 90%, transparent); }
     .portada-foto.cambia { animation: foto .8s ease; }
     .portada h1 { font-size: clamp(2.4rem, 11vw, 4rem); }
     .entrada, .portada .acciones, .gusto { padding-inline: var(--gutter); }
